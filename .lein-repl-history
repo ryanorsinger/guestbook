@@ -1,0 +1,10 @@
+(* 2 2)
+(. System exit 0)
+(use 'guestbook.repl)
+(start-server)
+(user 'guestbook.routes.home)
+exit
+(use 'guestbook.routes.home)
+(home)
+(defn init []
+  (println "guestbook is starting"))
