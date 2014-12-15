@@ -1,17 +1,32 @@
 (ns guestbook.routes.home
   (:require [compojure.core :refer :all]
-            [guestbook.views.layout :as layout]))
+            [guestbook.views.layout :as layout]
+            [hiccup.form :refer :all]))
 
-(defn home []
+(defn show-guests []
+  [:ul.guests
+    (for [{:keys [message name timestamp]}
+      [{:message "Howdy" :name "Jillian" :timestamp nil}
+      {:message "Salutations" :name "Bob" :timestamp nil}]]
+  [:li
+    [:blockquote message]
+    [:p "-" [:cite name]]
+    [:time timestamp]])])
+
+(defn home [& [name message error]]
   (layout/common
     [:h1 "Guestbook"]
-    [:p1 "Welcome to my guestbook"]
+    [:p "Welcome to my guestbook"]
+    [:p error]
+    (show-guests)
     [:hr]
-    [:form
-      [:p "Name: "]
-      [:input]
-      [:p "Message: "]
-      [:textarea {:rows 10 :cols 40}]]))
+    (form-to [:post "/"]
+      [:p "Name:"]
+      (text-field "name" name)
+      [:p "Message"]
+      (text-area {:rows 10 :cols 40} "message" message)
+      [:br]
+      (submit-button "comment"))))
 
 (defroutes home-routes
   (GET "/" [] (home)))
